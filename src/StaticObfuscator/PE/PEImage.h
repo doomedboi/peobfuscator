@@ -40,11 +40,24 @@ namespace pe {
         std::string forward; // empty if no
     };
 
+    struct ImportFunction {
+        std::string functionName;      
+        DWORD iat;
+        DWORD ordinalNum; //no zero? = imp by ord
+    };
+
+    struct ImportModuleEntry {
+        auto NumberOfFuncs();
+        std::string moduleName = "";       
+        std::vector<ImportFunction> funcs;
+    };
+
 #include <utility>
 #include <vector>
 
 using exports = std::vector<ExportEntry>;
 using getDirectoryResult = std::tuple<std::uint64_t, std::size_t, AddressingType>;
+using Imports = std::vector<ImportModuleEntry>;
 
 class PEImage {
 public:
@@ -55,13 +68,16 @@ public:
 
     OBFUSCATOR_API NTSTATUS Load(const std::string_view path);
 
-    OBFUSCATOR_API exports GetExports();    
+    OBFUSCATOR_API exports GetExports();
+
+    OBFUSCATOR_API Imports GetImports();
 
 private:
     OBFUSCATOR_API NTSTATUS ParsePE();
     OBFUSCATOR_API getDirectoryResult
         GetDataDirectoryEntry(std::size_t, AddressingType);
     OBFUSCATOR_API void ParseExport();
+    OBFUSCATOR_API void ParseImport();
 
 private:
     bool _loadAsImage = false;
@@ -79,6 +95,7 @@ private:
     FileType _fileType = FileType::UNKNOWN;
     std::vector<IMAGE_SECTION_HEADER> _sections;
     exports _exports;
+    Imports _imports;
 };
 
 

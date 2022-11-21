@@ -48,6 +48,14 @@ OBFUSCATOR_API NTSTATUS PEImage::Load(std::string_view path)
     return STATUS_SUCCESS;
 }
 
+OBFUSCATOR_API Imports PEImage::GetImports()
+{
+    if (_imports.size() == 0)
+        ParseImport();
+    return _imports;
+
+}
+
 OBFUSCATOR_API NTSTATUS PEImage::ParsePE()
 {
     auto* dosHeader = reinterpret_cast
@@ -192,6 +200,75 @@ OBFUSCATOR_API exports PEImage::GetExports()
     return _exports;
 }
 
+OBFUSCATOR_API void PEImage::ParseImport()
+{
+    _imports.clear();
+
+    auto [importSectionAddy, size, addrType] = 
+        GetDataDirectoryEntry(IMAGE_DIRECTORY_ENTRY_IMPORT, AddressingType::VA);
+    auto* IAT = reinterpret_cast<PIMAGE_IMPORT_DESCRIPTOR>(importSectionAddy);
+    if (!IAT)
+        return;
+        
+    for (auto currentDLL = IAT; ; ++currentDLL) {
+        if (currentDLL->Characteristics == 0)
+            break;
+        DWORD iatIndex = 0;
+
+        auto table = currentDLL->OriginalFirstThunk ?
+            currentDLL->OriginalFirstThunk : currentDLL->FirstThunk;
+        //to va
+        table += (uintptr_t)_imageView;
+        
+        auto AddressOfData = [this](auto addr) {
+            return _architecture == Arch::x64 ?
+                ((IMAGE_THUNK_DATA64*)addr)->u1.AddressOfData : ((IMAGE_THUNK_DATA32*)addr)->u1.AddressOfData;
+        };
+
+        ImportModuleEntry importModule;
+        importModule.moduleName = std::string(
+            currentDLL->Name == 0 ? "" : (char*)(currentDLL->Name + (uintptr_t)_imageView
+        ));
+
+        for (; AddressOfData(table);) {
+            auto AddyOfData = AddressOfData(table);
+            auto* importByName = reinterpret_cast<IMAGE_IMPORT_BY_NAME*>(AddyOfData);
+            if (importByName == nullptr)
+                return;
+
+            ImportFunction funcData;
+            // check import type
+            if (AddyOfData < (_architecture == Arch::x64 ?
+                IMAGE_ORDINAL_FLAG64 : IMAGE_ORDINAL_FLAG32) && importByName->Name) {
+                // import by name
+                funcData.functionName = std::string((char*)importByName->Name + (uintptr_t)_imageView);
+                funcData.ordinalNum = 0;
+            } 
+            else {
+                funcData.functionName = "";
+                funcData.ordinalNum = static_cast<WORD>(AddyOfData & 0xFFFF);
+                funcData.iat = 0;
+            }
+            if (currentDLL->FirstThunk)
+                funcData.iat = iatIndex + currentDLL->FirstThunk;
+            else
+                // cacl by myself
+                funcData.iat = (AddyOfData - (uintptr_t)_imageView);
+
+            table += _architecture == Arch::x64 ? 
+                sizeof(IMAGE_THUNK_DATA64) : sizeof(IMAGE_THUNK_DATA32);
+            iatIndex += _architecture == Arch::x64 ?
+                sizeof(uint64_t) : sizeof(uint32_t);
+            importModule.funcs.push_back(funcData);
+        }
+        _imports.push_back(importModule);
+    }
+}
+
+auto ImportModuleEntry::NumberOfFuncs()
+{
+    return funcs.size();
+}
 
 }
 }
