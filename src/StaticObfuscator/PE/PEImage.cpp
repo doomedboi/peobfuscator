@@ -56,15 +56,15 @@ OBFUSCATOR_API NTSTATUS PEImage::ParsePE()
     if (dosHeader->e_magic != IMAGE_DOS_SIGNATURE)
         return STATUS_INVALID_IMAGE_FORMAT;
 
-    auto* peHeader32 = reinterpret_cast<IMAGE_NT_HEADERS32*>(
+    _ntHeaders32 = reinterpret_cast<IMAGE_NT_HEADERS32*>(
         reinterpret_cast<BYTE*>(dosHeader) + dosHeader->e_lfanew
         );
-    auto* peHeader64 = reinterpret_cast<IMAGE_NT_HEADERS64*>(
+    _ntHeaders64 = reinterpret_cast<IMAGE_NT_HEADERS64*>(
         reinterpret_cast<BYTE*>(dosHeader) + dosHeader->e_lfanew
         );
 
     // check whether valid PE or not
-    if (peHeader32->Signature != IMAGE_NT_SIGNATURE)
+    if (_ntHeaders32->Signature != IMAGE_NT_SIGNATURE)
         return STATUS_INVALID_SIGNATURE;
 
     
@@ -96,15 +96,15 @@ OBFUSCATOR_API NTSTATUS PEImage::ParsePE()
         return Arch(imgHeaders->OptionalHeader.Magic);
     };
 
-    if (auto arch = checkArch(peHeader32); arch == Arch::x64)
-        parseHeaders(peHeader64);
+    if (auto arch = checkArch(_ntHeaders32); arch == Arch::x64)
+        parseHeaders(_ntHeaders64);
     else
-        parseHeaders(peHeader32);
+        parseHeaders(_ntHeaders32);
 
     
-    auto parseSections = [this, peHeader32]() {
+    auto parseSections = [this]() {
         auto firstSection = reinterpret_cast<IMAGE_SECTION_HEADER*>(
-            peHeader32 + 1
+            _ntHeaders32 + 1
             );
         for (int i = 0; i < _numberOfSection; ++i, ++firstSection)
             _sections.push_back(*firstSection);
@@ -114,6 +114,84 @@ OBFUSCATOR_API NTSTATUS PEImage::ParsePE()
 
     return STATUS_SUCCESS;
 }
+
+OBFUSCATOR_API getDirectoryResult
+    PEImage::GetDataDirectoryEntry(std::size_t index, AddressingType mode)
+{
+    if (index < 0 || index >= 16)
+        return { 0LL, 0, AddressingType(mode) };
+
+    auto dataDirectories = _architecture == Arch::x64 ?
+        _ntHeaders64->OptionalHeader.DataDirectory :
+        _ntHeaders32->OptionalHeader.DataDirectory;
+
+    auto resultAddress = dataDirectories[index].VirtualAddress;
+    if (mode == AddressingType::VA)
+        resultAddress += DWORD(_imageView);
+    
+    return { resultAddress, dataDirectories[index].Size, mode };    
+}
+
+
+OBFUSCATOR_API void PEImage::ParseExport()
+{
+    /*get DATA_DIRECTORY_TABLE w/ 0 index(export)*/
+    auto [addrDataDirectory, exportTableSize, mode]
+        = (GetDataDirectoryEntry(0, AddressingType::VA));
+        
+    if (addrDataDirectory == 0)
+        return;
+
+    auto exportTable = reinterpret_cast<IMAGE_EXPORT_DIRECTORY*>(
+        addrDataDirectory
+    );
+    
+    auto imageView = (uintptr_t)_imageView;
+    auto* vaFunctions = (DWORD*)(exportTable->AddressOfFunctions + imageView);
+    auto* vaFuncsNames = (DWORD*)(exportTable->AddressOfNames + imageView);
+    auto* vaOrdinals = (WORD*)(exportTable->AddressOfNameOrdinals + imageView);
+    
+    auto numOfFuncs = exportTable->NumberOfFunctions;
+    auto numOfNames = exportTable->NumberOfNames;
+
+    for (int i = 0; i < std::max<>(numOfFuncs, numOfNames); ++i) {
+            
+        DWORD funcAddr = NULL;
+        std::string name;
+        if (i < numOfNames) {
+            name = (char*)(vaFuncsNames[i] + imageView);
+            funcAddr = vaFunctions[vaOrdinals[i]];
+        }
+        else
+            name = "";
+
+        if (funcAddr == 0)
+            continue;
+        
+        const char* forward = nullptr;
+        /*check for forwording functions*/
+        // hint: forwarding funcs always do not
+        // beyond of the export table
+        if (funcAddr > addrDataDirectory && funcAddr < (addrDataDirectory + exportTableSize)) {
+            forward = (char*)funcAddr;
+        }
+        else
+            forward = nullptr;
+
+        _exports.emplace_back(ExportEntry
+            {name, funcAddr + imageView/*va*/, std::string(forward == nullptr? "" : forward)}
+        );
+    }
+}
+
+
+OBFUSCATOR_API exports PEImage::GetExports()
+{
+    if (_exports.empty())
+        ParseExport();
+    return _exports;
+}
+
 
 }
 }
