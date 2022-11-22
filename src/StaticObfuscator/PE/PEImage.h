@@ -68,27 +68,67 @@ using Relocs = std::vector<std::vector<RelocData>>;
 
 class PEImage {
 public:
-
+    
     OBFUSCATOR_API PEImage() = default;
 
     OBFUSCATOR_API ~PEImage();
     
     OBFUSCATOR_API PEImage(PEImage&&) = default;
 
+    /// <summary>
+    /// Load PE by specified path
+    /// </summary>
+    /// <returns>Status code true on succes</returns>
     OBFUSCATOR_API NTSTATUS Load(const std::string_view path);
-
+    
+    /// <summary>
+    /// Obtain pe's export table
+    /// </summary>
+    /// <returns>Export table</returns>
     OBFUSCATOR_API exports GetExports();
 
+    /// <summary>
+    /// Obtain pe's imports
+    /// </summary>
+    /// <returns>Import table</returns>
     OBFUSCATOR_API Imports GetImports();
 
+    /// <summary>
+    /// Obtain pe's relocs
+    /// </summary>
+    /// <returns> Relocs table</returns>
     OBFUSCATOR_API Relocs  GetRelocs();
 
 private:
+    /// <summary>
+    /// Parse internal pe's headers
+    /// <returns> NT_STATUS SUCCES if OK<\returns>
+    /// </summary>
     OBFUSCATOR_API NTSTATUS ParsePE();
+    
+    /// <summary>
+    /// Get Data_Directory by index
+    /// <returns>Directory result info otherwise empty tuple<\returns>
+    /// </summary>
     OBFUSCATOR_API getDirectoryResult
         GetDataDirectoryEntry(std::size_t, AddressingType);
+    
+    /// <summary>
+    /// Parse export sections
+    /// <result>_exports internal field<\result>
+    /// </summary>
     OBFUSCATOR_API void ParseExport();
+    
+    /// <summary>
+    /// Parse pe's Imports
+    /// <result>_imports internal field<\result>
+    /// </summary>
     OBFUSCATOR_API void ParseImport();
+
+    /// <summary>
+    /// Obtain pe's relocs if has
+    /// <result>_relocs internal field if hasn't - empty container<\result>
+    /// </summary>
     OBFUSCATOR_API void ParseRelocs();
 
 private:

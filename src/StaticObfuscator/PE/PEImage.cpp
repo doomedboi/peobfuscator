@@ -154,7 +154,6 @@ OBFUSCATOR_API getDirectoryResult
     return { resultAddress, dataDirectories[index].Size, mode };    
 }
 
-
 OBFUSCATOR_API void PEImage::ParseExport()
 {
     /*get DATA_DIRECTORY_TABLE w/ 0 index(export)*/
