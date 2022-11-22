@@ -144,6 +144,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Config.h" />
+    <ClInclude Include="Include\WindowsHeaders.h" />
+    <ClInclude Include="PE\PEImage.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Include\main.cpp" />
+    <ClCompile Include="PE\PEImage.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
