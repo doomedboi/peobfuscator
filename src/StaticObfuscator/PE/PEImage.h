@@ -1,9 +1,12 @@
 
 #include "..\Config.h"
 #include "..\Include\WindowsHeaders.h"
-#include <filesystem>
+#include <map>
 #include <algorithm>
-#include <iostream>
+#include <utility>
+#include <vector>
+#include <string>
+#include <filesystem>
 
 namespace obfuscator {
 
@@ -52,18 +55,24 @@ namespace pe {
         std::vector<ImportFunction> funcs;
     };
 
-#include <utility>
-#include <vector>
+    struct RelocData {
+        DWORD rva = 0;
+        DWORD type = 0;
+    };
+
 
 using exports = std::vector<ExportEntry>;
 using getDirectoryResult = std::tuple<std::uint64_t, std::size_t, AddressingType>;
 using Imports = std::vector<ImportModuleEntry>;
+using Relocs = std::vector<std::vector<RelocData>>;
 
 class PEImage {
 public:
 
     OBFUSCATOR_API PEImage() = default;
-    OBFUSCATOR_API ~PEImage() = default;
+
+    OBFUSCATOR_API ~PEImage();
+    
     OBFUSCATOR_API PEImage(PEImage&&) = default;
 
     OBFUSCATOR_API NTSTATUS Load(const std::string_view path);
@@ -72,12 +81,15 @@ public:
 
     OBFUSCATOR_API Imports GetImports();
 
+    OBFUSCATOR_API Relocs  GetRelocs();
+
 private:
     OBFUSCATOR_API NTSTATUS ParsePE();
     OBFUSCATOR_API getDirectoryResult
         GetDataDirectoryEntry(std::size_t, AddressingType);
     OBFUSCATOR_API void ParseExport();
     OBFUSCATOR_API void ParseImport();
+    OBFUSCATOR_API void ParseRelocs();
 
 private:
     bool _loadAsImage = false;
@@ -96,6 +108,7 @@ private:
     std::vector<IMAGE_SECTION_HEADER> _sections;
     exports _exports;
     Imports _imports;
+    Relocs _relocs;
 };
 
 

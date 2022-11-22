@@ -3,6 +3,7 @@
 namespace obfuscator {
 
 namespace pe {
+
 OBFUSCATOR_API NTSTATUS PEImage::Load(std::string_view path)
 {
     if (std::filesystem::exists(std::filesystem::path(
@@ -48,12 +49,25 @@ OBFUSCATOR_API NTSTATUS PEImage::Load(std::string_view path)
     return STATUS_SUCCESS;
 }
 
+OBFUSCATOR_API PEImage::~PEImage()
+{
+    if (_imageView)
+        UnmapViewOfFile(_imageView);
+}
+
 OBFUSCATOR_API Imports PEImage::GetImports()
 {
     if (_imports.size() == 0)
         ParseImport();
     return _imports;
 
+}
+
+OBFUSCATOR_API Relocs PEImage::GetRelocs()
+{
+    if (_relocs.size() == 0)
+        ParseRelocs();
+    return _relocs;
 }
 
 OBFUSCATOR_API NTSTATUS PEImage::ParsePE()
@@ -147,7 +161,7 @@ OBFUSCATOR_API void PEImage::ParseExport()
     auto [addrDataDirectory, exportTableSize, mode]
         = (GetDataDirectoryEntry(0, AddressingType::VA));
         
-    if (addrDataDirectory == 0)
+    if (addrDataDirectory == 0 || exportTableSize == 0)
         return;
 
     auto exportTable = reinterpret_cast<IMAGE_EXPORT_DIRECTORY*>(
@@ -262,6 +276,53 @@ OBFUSCATOR_API void PEImage::ParseImport()
             importModule.funcs.push_back(funcData);
         }
         _imports.push_back(importModule);
+    }
+}
+
+OBFUSCATOR_API void PEImage::ParseRelocs()
+{
+    auto [relocsDirAddy, dirSz, type] =
+        GetDataDirectoryEntry(IMAGE_DIRECTORY_ENTRY_BASERELOC, AddressingType::VA);
+    auto* relocsDir = reinterpret_cast<PIMAGE_BASE_RELOCATION>(
+        relocsDirAddy
+        );
+    if (dirSz == NULL)
+        return;
+
+    _relocs.clear();
+    _relocs.reserve(20);
+
+    while (relocsDir->VirtualAddress) {
+        std::vector<RelocData> block;
+        block.reserve(20);
+        // it can't be smaller
+        if (relocsDir->SizeOfBlock >= sizeof(IMAGE_BASE_RELOCATION)) {
+            /*winnt hasn't member TypeOffset but actually it has*/ 
+            auto relocItemsCount =
+                (relocsDir->SizeOfBlock - sizeof(relocsDir->VirtualAddress)
+                    - sizeof(relocsDir->SizeOfBlock)) / sizeof(WORD);
+            WORD* relocsArray = (WORD*)(relocsDir + 1); // again: see winnt.h
+            
+            
+            // process relocation entries
+            for (int i = 0; i < relocItemsCount; ++i) { 
+                auto type = (relocsArray[i] >> 12);
+                auto offset = (relocsArray[i] & 0xFFF);
+                
+                auto itemRVA = relocsDir->VirtualAddress + offset;
+                
+
+                block.emplace_back(
+                    itemRVA,
+                    type
+                );
+                
+            }
+        }
+
+        _relocs.push_back(block);
+        relocsDir = reinterpret_cast<IMAGE_BASE_RELOCATION*>
+            ((BYTE*)relocsDir + (relocsDir->SizeOfBlock));
     }
 }
 
