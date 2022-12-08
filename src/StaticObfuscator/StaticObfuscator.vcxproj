@@ -31,6 +31,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -38,6 +39,7 @@
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>true</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -143,13 +145,167 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="3rd_party\asmjit\a64.h" />
+    <ClInclude Include="3rd_party\asmjit\arm.h" />
+    <ClInclude Include="3rd_party\asmjit\arm\a64archtraits_p.h" />
+    <ClInclude Include="3rd_party\asmjit\arm\a64assembler.h" />
+    <ClInclude Include="3rd_party\asmjit\arm\a64builder.h" />
+    <ClInclude Include="3rd_party\asmjit\arm\a64compiler.h" />
+    <ClInclude Include="3rd_party\asmjit\arm\a64emithelper_p.h" />
+    <ClInclude Include="3rd_party\asmjit\arm\a64emitter.h" />
+    <ClInclude Include="3rd_party\asmjit\arm\a64formatter_p.h" />
+    <ClInclude Include="3rd_party\asmjit\arm\a64func_p.h" />
+    <ClInclude Include="3rd_party\asmjit\arm\a64globals.h" />
+    <ClInclude Include="3rd_party\asmjit\arm\a64instapi_p.h" />
+    <ClInclude Include="3rd_party\asmjit\arm\a64instdb.h" />
+    <ClInclude Include="3rd_party\asmjit\arm\a64instdb_p.h" />
+    <ClInclude Include="3rd_party\asmjit\arm\a64operand.h" />
+    <ClInclude Include="3rd_party\asmjit\arm\a64rapass_p.h" />
+    <ClInclude Include="3rd_party\asmjit\arm\a64utils.h" />
+    <ClInclude Include="3rd_party\asmjit\arm\armformatter_p.h" />
+    <ClInclude Include="3rd_party\asmjit\arm\armglobals.h" />
+    <ClInclude Include="3rd_party\asmjit\arm\armoperand.h" />
+    <ClInclude Include="3rd_party\asmjit\asmjit-scope-begin.h" />
+    <ClInclude Include="3rd_party\asmjit\asmjit-scope-end.h" />
+    <ClInclude Include="3rd_party\asmjit\asmjit.h" />
+    <ClInclude Include="3rd_party\asmjit\core.h" />
+    <ClInclude Include="3rd_party\asmjit\core\api-build_p.h" />
+    <ClInclude Include="3rd_party\asmjit\core\api-config.h" />
+    <ClInclude Include="3rd_party\asmjit\core\archcommons.h" />
+    <ClInclude Include="3rd_party\asmjit\core\archtraits.h" />
+    <ClInclude Include="3rd_party\asmjit\core\assembler.h" />
+    <ClInclude Include="3rd_party\asmjit\core\builder.h" />
+    <ClInclude Include="3rd_party\asmjit\core\codebuffer.h" />
+    <ClInclude Include="3rd_party\asmjit\core\codeholder.h" />
+    <ClInclude Include="3rd_party\asmjit\core\codewriter_p.h" />
+    <ClInclude Include="3rd_party\asmjit\core\compiler.h" />
+    <ClInclude Include="3rd_party\asmjit\core\compilerdefs.h" />
+    <ClInclude Include="3rd_party\asmjit\core\constpool.h" />
+    <ClInclude Include="3rd_party\asmjit\core\cpuinfo.h" />
+    <ClInclude Include="3rd_party\asmjit\core\emithelper_p.h" />
+    <ClInclude Include="3rd_party\asmjit\core\emitter.h" />
+    <ClInclude Include="3rd_party\asmjit\core\emitterutils_p.h" />
+    <ClInclude Include="3rd_party\asmjit\core\environment.h" />
+    <ClInclude Include="3rd_party\asmjit\core\errorhandler.h" />
+    <ClInclude Include="3rd_party\asmjit\core\formatter.h" />
+    <ClInclude Include="3rd_party\asmjit\core\formatter_p.h" />
+    <ClInclude Include="3rd_party\asmjit\core\func.h" />
+    <ClInclude Include="3rd_party\asmjit\core\funcargscontext_p.h" />
+    <ClInclude Include="3rd_party\asmjit\core\globals.h" />
+    <ClInclude Include="3rd_party\asmjit\core\inst.h" />
+    <ClInclude Include="3rd_party\asmjit\core\jitallocator.h" />
+    <ClInclude Include="3rd_party\asmjit\core\jitruntime.h" />
+    <ClInclude Include="3rd_party\asmjit\core\logger.h" />
+    <ClInclude Include="3rd_party\asmjit\core\misc_p.h" />
+    <ClInclude Include="3rd_party\asmjit\core\operand.h" />
+    <ClInclude Include="3rd_party\asmjit\core\osutils.h" />
+    <ClInclude Include="3rd_party\asmjit\core\osutils_p.h" />
+    <ClInclude Include="3rd_party\asmjit\core\raassignment_p.h" />
+    <ClInclude Include="3rd_party\asmjit\core\rabuilders_p.h" />
+    <ClInclude Include="3rd_party\asmjit\core\radefs_p.h" />
+    <ClInclude Include="3rd_party\asmjit\core\ralocal_p.h" />
+    <ClInclude Include="3rd_party\asmjit\core\rapass_p.h" />
+    <ClInclude Include="3rd_party\asmjit\core\rastack_p.h" />
+    <ClInclude Include="3rd_party\asmjit\core\string.h" />
+    <ClInclude Include="3rd_party\asmjit\core\support.h" />
+    <ClInclude Include="3rd_party\asmjit\core\target.h" />
+    <ClInclude Include="3rd_party\asmjit\core\type.h" />
+    <ClInclude Include="3rd_party\asmjit\core\virtmem.h" />
+    <ClInclude Include="3rd_party\asmjit\core\zone.h" />
+    <ClInclude Include="3rd_party\asmjit\core\zonehash.h" />
+    <ClInclude Include="3rd_party\asmjit\core\zonelist.h" />
+    <ClInclude Include="3rd_party\asmjit\core\zonestack.h" />
+    <ClInclude Include="3rd_party\asmjit\core\zonestring.h" />
+    <ClInclude Include="3rd_party\asmjit\core\zonetree.h" />
+    <ClInclude Include="3rd_party\asmjit\core\zonevector.h" />
+    <ClInclude Include="3rd_party\asmjit\Wrapper\AsmWrapperFactory.h" />
+    <ClInclude Include="3rd_party\asmjit\Wrapper\AsmWrapperX32.h" />
+    <ClInclude Include="3rd_party\asmjit\Wrapper\IAssembler.h" />
+    <ClInclude Include="3rd_party\asmjit\x86.h" />
+    <ClInclude Include="3rd_party\asmjit\x86\x86archtraits_p.h" />
+    <ClInclude Include="3rd_party\asmjit\x86\x86assembler.h" />
+    <ClInclude Include="3rd_party\asmjit\x86\x86builder.h" />
+    <ClInclude Include="3rd_party\asmjit\x86\x86compiler.h" />
+    <ClInclude Include="3rd_party\asmjit\x86\x86emithelper_p.h" />
+    <ClInclude Include="3rd_party\asmjit\x86\x86emitter.h" />
+    <ClInclude Include="3rd_party\asmjit\x86\x86formatter_p.h" />
+    <ClInclude Include="3rd_party\asmjit\x86\x86func_p.h" />
+    <ClInclude Include="3rd_party\asmjit\x86\x86globals.h" />
+    <ClInclude Include="3rd_party\asmjit\x86\x86instapi_p.h" />
+    <ClInclude Include="3rd_party\asmjit\x86\x86instdb.h" />
+    <ClInclude Include="3rd_party\asmjit\x86\x86instdb_p.h" />
+    <ClInclude Include="3rd_party\asmjit\x86\x86opcode_p.h" />
+    <ClInclude Include="3rd_party\asmjit\x86\x86operand.h" />
+    <ClInclude Include="3rd_party\asmjit\x86\x86rapass_p.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Include\WindowsHeaders.h" />
     <ClInclude Include="PE\PEImage.h" />
+    <ClInclude Include="Utilities\Utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="3rd_party\asmjit\arm\a64assembler.cpp" />
+    <ClCompile Include="3rd_party\asmjit\arm\a64builder.cpp" />
+    <ClCompile Include="3rd_party\asmjit\arm\a64compiler.cpp" />
+    <ClCompile Include="3rd_party\asmjit\arm\a64emithelper.cpp" />
+    <ClCompile Include="3rd_party\asmjit\arm\a64formatter.cpp" />
+    <ClCompile Include="3rd_party\asmjit\arm\a64func.cpp" />
+    <ClCompile Include="3rd_party\asmjit\arm\a64instapi.cpp" />
+    <ClCompile Include="3rd_party\asmjit\arm\a64instdb.cpp" />
+    <ClCompile Include="3rd_party\asmjit\arm\a64operand.cpp" />
+    <ClCompile Include="3rd_party\asmjit\arm\a64rapass.cpp" />
+    <ClCompile Include="3rd_party\asmjit\arm\armformatter.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\archtraits.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\assembler.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\builder.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\codeholder.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\codewriter.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\compiler.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\constpool.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\cpuinfo.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\emithelper.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\emitter.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\emitterutils.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\environment.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\errorhandler.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\formatter.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\func.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\funcargscontext.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\globals.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\inst.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\jitallocator.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\jitruntime.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\logger.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\operand.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\osutils.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\ralocal.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\rapass.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\rastack.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\string.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\support.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\target.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\type.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\virtmem.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\zone.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\zonehash.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\zonelist.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\zonestack.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\zonetree.cpp" />
+    <ClCompile Include="3rd_party\asmjit\core\zonevector.cpp" />
+    <ClCompile Include="3rd_party\asmjit\Wrapper\AsmWrapperX86.cpp" />
+    <ClCompile Include="3rd_party\asmjit\Wrapper\IAssembler.cpp" />
+    <ClCompile Include="3rd_party\asmjit\x86\x86assembler.cpp" />
+    <ClCompile Include="3rd_party\asmjit\x86\x86builder.cpp" />
+    <ClCompile Include="3rd_party\asmjit\x86\x86compiler.cpp" />
+    <ClCompile Include="3rd_party\asmjit\x86\x86emithelper.cpp" />
+    <ClCompile Include="3rd_party\asmjit\x86\x86formatter.cpp" />
+    <ClCompile Include="3rd_party\asmjit\x86\x86func.cpp" />
+    <ClCompile Include="3rd_party\asmjit\x86\x86instapi.cpp" />
+    <ClCompile Include="3rd_party\asmjit\x86\x86instdb.cpp" />
+    <ClCompile Include="3rd_party\asmjit\x86\x86operand.cpp" />
+    <ClCompile Include="3rd_party\asmjit\x86\x86rapass.cpp" />
     <ClCompile Include="Include\main.cpp" />
     <ClCompile Include="PE\PEImage.cpp" />
+    <ClCompile Include="Utilities\Utils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
