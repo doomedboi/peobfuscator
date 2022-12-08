@@ -43,6 +43,7 @@ GeneratedFiles*/
 *.lastbuildstate
 ipch/
 obj/
+JitTests/
 cmake/
 [Bb]in
 [Dd]ebug*/
