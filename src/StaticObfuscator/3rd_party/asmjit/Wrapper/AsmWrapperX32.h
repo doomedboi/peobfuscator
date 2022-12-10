@@ -11,10 +11,10 @@ public:
 
     virtual void GenerateEpiloge() override;
 
-    virtual void GenerateCall(functionAddress label, std::vector<ArgType> args,
-        CallingConv callingConv) override;
+    virtual retTypeVariant GenerateCall(functionAddress label, std::vector<ArgType> args,
+        asmwrapper::RetType retType, CallingConv callingConv) override;
 
-    virtual void GenerateJunk(JunkType) override;
+    virtual void GenerateJunk(asmwrapper::JunkType) override;
 
     
 

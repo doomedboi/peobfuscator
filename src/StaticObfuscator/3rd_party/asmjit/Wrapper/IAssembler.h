@@ -7,19 +7,20 @@
 #include <variant>
 #include <intsafe.h>
 #include "../../../Utilities/Utils.h"
+#include <cassert> 
+#include <utility>
+#include "AsmEnums.h"
 
 struct functionInfo;
 struct functionBlock;
 
 using functionAddress = std::variant<asmjit::Label, asmjit::Imm, asmjit::RegGroup>;
-using ArgType         = std::variant<asmjit::Imm>;
+using ArgType         = std::variant<asmjit::Imm, asmjit::x86::Mem, asmjit::x86::Gp>;
 using stackVariarity = asmjit::x86::Gp;
+using retTypeVariant = std::variant<asmjit::x86::Gp, asmjit::x86::Xmm, asmjit::x86::St>;
+using ReturnPack = std::pair<asmwrapper::RetType, retTypeVariant>;
 
-enum class JunkType
-{
-    REGMOVEMENT = 0x1,
-    STACKABUSE = 0x2
-};
+
 
 class IAssembler {
 public:
@@ -27,7 +28,7 @@ public:
     enum class Arch {
         x86 = 0x1,
         x64 = 0x2
-    };
+    };    
 
     // determines method of function's invocation
     enum class CallType {
@@ -56,18 +57,39 @@ public:
 
     virtual void GeneratePrologue() = 0;
     virtual void GenerateEpiloge() = 0;
-    virtual void GenerateCall(functionAddress, std::vector<ArgType> args,
+    virtual retTypeVariant GenerateCall(functionAddress, std::vector<ArgType> args, asmwrapper::RetType,
          CallingConv callingConv) = 0;
 
     virtual functionAddress GenerateFunction(functionBlock) = 0; //TODO: think about args & etc
 
-    virtual void GenerateJunk(JunkType) = 0;
+    virtual void GenerateJunk(asmwrapper::JunkType) = 0;
+
+    retTypeVariant GetRetValue(asmwrapper::RetType retT) {
+        if (retT == asmwrapper::RetType::_void)
+            assert("void has nothing to return");
+
+        retTypeVariant retValue;
+        
+        switch (retT)
+        {
+        case asmwrapper::RetType::_void:
+            break;
+        case asmwrapper::RetType::_int:
+            retValue = Assembler()->zax();
+            break;
+        case asmwrapper::RetType::_float:
+        case asmwrapper::RetType::_double:
+            retValue = asmjit::x86::st0;
+            break;
+        default:
+            break;
+        }
+
+        return retValue;
+    }
 
     // no sp & bp
     asmjit::x86::Gp GetRandomRegister(size_t seed) {
-        int garbage;
-        ::srand((seed << 4) + (seed ^ 0x1110001010101));
-#define REGS_COUNT 5
         auto idx = utils::rand(0, 5);
         switch (idx)
         {
@@ -92,6 +114,7 @@ public:
         }  
     }
 
+
     inline asmjit::CodeHolder* CodeHolder() { return &_codeHolder; }
     inline asmjit::x86::Assembler* Assembler() { return _assm; }
     inline asmjit::JitRuntime* Runtime() { return &_runtime; }
@@ -107,6 +130,7 @@ struct functionInfo {
     functionAddress addres; // Address of function
     IAssembler::CallingConv cc; // Calling Convention
     std::vector<ArgType> parameters;
+    asmwrapper::RetType retType = asmwrapper::RetType::_void;
     bool hasEpilogPrologue = true;
 };
 

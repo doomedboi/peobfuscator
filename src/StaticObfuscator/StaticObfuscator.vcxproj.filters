@@ -97,6 +97,7 @@
     <ClInclude Include="3rd_party\asmjit\Wrapper\AsmWrapperX32.h" />
     <ClInclude Include="3rd_party\asmjit\Wrapper\AsmWrapperFactory.h" />
     <ClInclude Include="Utilities\Utils.h" />
+    <ClInclude Include="3rd_party\asmjit\Wrapper\AsmEnums.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PE\PEImage.cpp" />
