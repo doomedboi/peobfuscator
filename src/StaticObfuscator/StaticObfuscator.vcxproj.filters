@@ -4,9 +4,11 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="PE\PEImage.h" />
     <ClInclude Include="Include\WindowsHeaders.h" />
+    <ClInclude Include="MAP\MapParser.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PE\PEImage.cpp" />
-    <ClCompile Include="Include\main.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MAP\MapParser.cpp" />
   </ItemGroup>
 </Project>
