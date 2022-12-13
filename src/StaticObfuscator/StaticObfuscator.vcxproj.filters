@@ -4,9 +4,76 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="PE\PEImage.h" />
     <ClInclude Include="Include\WindowsHeaders.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\API\Memory.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\API\Process.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\API\Synchronization.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\API\Terminal.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\API\Thread.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\Internal\AtomicGNU.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\Internal\AtomicMSVC.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\Allocator.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\ArgParse.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\Atomic.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\Bitset.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\Comparison.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\Defines.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\Format.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\LibC.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\List.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\Object.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\Status.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\String.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\Types.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\Vector.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zycore\Zycore.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Generated\EnumInstructionCategory.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Generated\EnumISAExt.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Generated\EnumISASet.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Generated\EnumMnemonic.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Generated\EnumRegister.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Internal\DecoderData.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Internal\EncoderData.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Internal\FormatterATT.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Internal\FormatterBase.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Internal\FormatterIntel.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Internal\SharedData.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Internal\String.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Decoder.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\DecoderTypes.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Defines.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Encoder.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Formatter.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\FormatterBuffer.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\MetaInfo.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Mnemonic.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Register.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\SharedTypes.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\ShortString.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Status.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Utils.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Zydis.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Allocator.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\ArgParse.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Atomic.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Bitset.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Comparison.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Format.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\LibC.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\List.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Object.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\String.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Types.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Vector.h" />
+    <ClInclude Include="3rd_party\Zydis\Include\Zydis\Zycore.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PE\PEImage.cpp" />
-    <ClCompile Include="Include\main.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="3rd_party\Zydis\lib\Zycore.lib" />
+    <Library Include="3rd_party\Zydis\lib\Zydis.lib" />
+    <Library Include="3rd_party\Zydis\Zycore.lib" />
+    <Library Include="3rd_party\Zydis\Zydis.lib" />
   </ItemGroup>
 </Project>
