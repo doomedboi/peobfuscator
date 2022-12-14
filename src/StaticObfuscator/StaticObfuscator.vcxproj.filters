@@ -65,10 +65,13 @@
     <ClInclude Include="3rd_party\Zydis\Include\Zydis\Types.h" />
     <ClInclude Include="3rd_party\Zydis\Include\Zydis\Vector.h" />
     <ClInclude Include="3rd_party\Zydis\Include\Zydis\Zycore.h" />
+    <ClInclude Include="MAP\MapParser.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PE\PEImage.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MAP\MapParser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="3rd_party\Zydis\lib\Zycore.lib" />
