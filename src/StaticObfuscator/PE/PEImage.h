@@ -54,7 +54,7 @@ namespace pe {
         std::string moduleName = "";       
         std::vector<ImportFunction> funcs;
     };
-
+    
     struct RelocData {
         DWORD rva = 0;
         DWORD type = 0;
@@ -82,6 +82,10 @@ public:
     OBFUSCATOR_API Imports GetImports();
 
     OBFUSCATOR_API Relocs  GetRelocs();
+
+    OBFUSCATOR_API DWORD64 GetImageBase();
+
+    OBFUSCATOR_API std::vector<IMAGE_SECTION_HEADER> GetSections();
 
 private:
     OBFUSCATOR_API NTSTATUS ParsePE();

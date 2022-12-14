@@ -279,6 +279,11 @@ OBFUSCATOR_API void PEImage::ParseImport()
     }
 }
 
+OBFUSCATOR_API DWORD64 PEImage::GetImageBase()
+{
+    return (DWORD64)_imageView;
+}
+
 OBFUSCATOR_API void PEImage::ParseRelocs()
 {
     auto [relocsDirAddy, dirSz, type] =
@@ -331,5 +336,9 @@ auto ImportModuleEntry::NumberOfFuncs()
     return funcs.size();
 }
 
+OBFUSCATOR_API std::vector<IMAGE_SECTION_HEADER> PEImage::GetSections()
+{
+    return _sections;
+}
 }
 }
