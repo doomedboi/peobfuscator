@@ -330,5 +330,13 @@ auto ImportModuleEntry::NumberOfFuncs()
     return funcs.size();
 }
 
+OBFUSCATOR_API uint64_t PEImage::GetImageBase() {
+    return _imgBase;
+}
+
+OBFUSCATOR_API std::vector<IMAGE_SECTION_HEADER> PEImage::GetSections() {
+    return _sections;
+}
+
 }
 }

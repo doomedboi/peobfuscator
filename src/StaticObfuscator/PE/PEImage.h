@@ -99,11 +99,24 @@ public:
     /// <returns> Relocs table</returns>
     OBFUSCATOR_API Relocs  GetRelocs();
 
+    /// <summary>
+    /// Obtain pe's image base
+    /// </summary>
+    /// <returns> image base </returns>    
+    OBFUSCATOR_API uint64_t GetImageBase();
+
+    /// <summary>
+    /// Obtain pe's sections
+    /// <returns> vector of sections</returns>
+    /// </summary>
+    OBFUSCATOR_API std::vector<IMAGE_SECTION_HEADER>
+        GetSections();
+
 private:
     /// <summary>
-    /// Parse internal pe's headers
-    /// <returns> NT_STATUS SUCCES if OK<\returns>
+    /// Parse internal pe's headers    
     /// </summary>
+    /// <returns> NT_STATUS SUCCES if OK<\returns>
     OBFUSCATOR_API NTSTATUS ParsePE();
     
     /// <summary>
@@ -115,13 +128,13 @@ private:
     
     /// <summary>
     /// Parse export sections
-    /// <result>_exports internal field<\result>
+    /// <result>_exports internal field</result>
     /// </summary>
     OBFUSCATOR_API void ParseExport();
     
     /// <summary>
     /// Parse pe's Imports
-    /// <result>_imports internal field<\result>
+    /// <result>_imports internal field</result>
     /// </summary>
     OBFUSCATOR_API void ParseImport();
 
@@ -129,8 +142,7 @@ private:
     /// Obtain pe's relocs if has
     /// <result>_relocs internal field if hasn't - empty container<\result>
     /// </summary>
-    OBFUSCATOR_API void ParseRelocs();
-
+    OBFUSCATOR_API void ParseRelocs();    
 private:
     bool _loadAsImage = false;
     IMAGE_NT_HEADERS32* _ntHeaders32 = nullptr;
